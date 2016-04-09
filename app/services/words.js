@@ -3,7 +3,7 @@
 const RestClient = require('node-rest-client').Client;
 const API_KEY = require('../../local/wordnik_api_key.json').key;
 
-class Words  {
+class Words {
 
   constructor() {
 
