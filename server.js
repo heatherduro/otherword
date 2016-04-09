@@ -30,7 +30,7 @@ function cleanDefn(riddle){
 	// the examples appear after a colon
 	let parts = riddle.def.split(':');
 	if (parts.length > 1){
-		for (i = 1; i < parts.length; i++) { 
+		for (let i = 1; i < parts.length; i++) { 
 			// replace the examples with ####
     		parts[0] += parts[i].replace(new RegExp(riddle.word,'g'),'####');
 		}
