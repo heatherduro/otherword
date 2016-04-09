@@ -55,11 +55,13 @@ bot.onStartChattingMessage((message) => {
  
 bot.onTextMessage((message) => {
 	let lw = lastWord[message.chatId]
-	if(message.body.toLowerCase().includes(lw)){
-		message.reply("Nice!");
-	}
-	else{
-		message.reply("Sorry it was " + lw);
+	if(typeof lw !== 'undefined') {
+		if(message.body.toLowerCase().includes(lw)){
+			message.reply("Nice!");
+		}
+		else{
+			message.reply("Sorry it was " + lw);
+		}
 	}
 
 	getWord().then((riddle) => {
