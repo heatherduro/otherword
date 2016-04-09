@@ -9,7 +9,6 @@ class Words {
 
     this.restClient = new RestClient();
 
-    this.client = {};
     this.wordnik = {
       apiKey: API_KEY,
       api: {
