@@ -27,9 +27,8 @@ class Words  {
 
   // API Client wrapper
   fetch(url) {
-    var _this = this;
     return new Promise((resolve,reject) => {
-      _this.restClient.get(url, (data, response) => {
+      this.restClient.get(url, (data, response) => {
         resolve({data, response});
       }).on('error', reject);
     }).catch(e => {
