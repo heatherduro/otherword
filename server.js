@@ -17,8 +17,9 @@ let kik = new KikBot({
 });
 
 // can't get this to fire
-kik.onStartChattingMessage((message) => {
-  kik.getUserProfile(message.from).then(user => {
+kik.onStartChattingMessage(message => {
+
+  return kik.getUserProfile(message.from).then(user => {
 
     wordService.getRiddle().then(riddle => {
       wordCache[message.chatId] = riddle.word.toLowerCase();
@@ -28,24 +29,20 @@ kik.onStartChattingMessage((message) => {
     });
 
   });
+
 });
- 
-kik.onTextMessage((message) => {
 
-  let lastWord = wordCache[message.chatId];
-	let nextMessage = '';
+kik.onTextMessage(message => {
 
-	if(typeof lastWord !== 'undefined') {
-		if(message.body.toLowerCase().includes(lastWord)){
-			nextMessage = "Nice! \n";
-		}
-		else{
-			nextMessage = "Sorry it was " + lastWord + ".\n";
-		}
-	}
+  let correctWord = wordCache[message.chatId];
+  let nextMessage = `Sorry it was ${correctWord}\n`;
+
+  if (typeof correctWord === 'undefined' && message.body && message.body.toLowerCase().includes(correctWord)) {
+    nextMessage = `Well done! ${correctWord} is correct!\n`;
+  }
 
   wordService.getRiddle().then(riddle => {
-    lastWord[message.chatId] = riddle.word.toLowerCase();
+    wordCache[message.chatId] = riddle.word.toLowerCase();
     message.reply(`${nextMessage}\n${riddle.challenge}`);
   }).catch(function(err){
     message.reply("Something went wrong");
