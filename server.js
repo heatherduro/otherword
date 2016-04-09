@@ -5,6 +5,8 @@ const http = require('http');
 const KikBot = require('@kikinteractive/kik');
 const wordService = require('./app/services/words');
 
+const API_KEY = require('../../local/API_KEYS.json').kik;
+
 const port = process.env.PORT || 1337;
 
 let wordCache = {};
@@ -12,7 +14,7 @@ let wordCache = {};
 // Configure the kik API endpoint, details for your kik
 let kik = new KikBot({
   username: 'otherword',
-  apiKey: 'cf47fd6a-3f2a-4fd2-bf12-31eb90d9ff95',
+  apiKey: API_KEY,
   baseUrl: 'otherword.azurewebsites.net'
 });
 
