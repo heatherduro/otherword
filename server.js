@@ -32,7 +32,7 @@ function cleanDefn(riddle){
 	if (parts.length > 1){
 		for (let i = 1; i < parts.length; i++) { 
 			// replace the examples with ####
-    		parts[0] += parts[i].replace(new RegExp(riddle.word,'g'),'####');
+    		parts[0] += ':' + parts[i].replace(new RegExp(riddle.word,'g'),'####');
 		}
 	}
 	return parts[0];
