@@ -35,3 +35,7 @@ jspm_packages
 
 # Editors/IDEs
 .idea
+
+# Project
+local/*
+!local/.gitkeep
