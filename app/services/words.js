@@ -1,7 +1,7 @@
 'use strict';
 
 const RestClient = require('node-rest-client').Client;
-const API_KEY = require('../../local/API_KEYS.json').wordnik;
+const API_KEY = require('../local/API_KEYS.json').wordnik;
 
 class Words {
 
