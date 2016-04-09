@@ -66,18 +66,19 @@ bot.onStartChattingMessage((message) => {
  
 bot.onTextMessage((message) => {
 	let lw = lastWord[message.chatId]
+	let nextMessage = '';
 	if(typeof lw !== 'undefined') {
 		if(message.body.toLowerCase().includes(lw)){
-			message.reply("Nice!");
+			nextMessage = "Nice! \n";
 		}
 		else{
-			message.reply("Sorry it was " + lw);
+			nextMessage = "Sorry it was " + lw + ".\n";
 		}
 	}
 
 	getWord().then((riddle) => {
 		lastWord[message.chatId] = riddle.word.toLowerCase();
-		message.reply(cleanDefn(riddle));
+		message.reply(nextMessage + "\n" + cleanDefn(riddle));
 	}).catch(function(err){
 		message.reply("Something went wrong " + err);
 	});
