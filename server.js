@@ -25,8 +25,17 @@ let client = new Client();
 
 let lastWord = {};
 
+// sometimes the definition contains examples of use, need to hide those. 
 function cleanDefn(riddle){
-	return riddle.def.replace(new RegExp(riddle.word,'g'),'####')
+	// the examples appear after a colon
+	let parts = riddle.def.split(':');
+	if (parts.length > 1){
+		for (i = 1; i < parts.length; i++) { 
+			// replace the examples with ####
+    		parts[0] += parts[i].replace(new RegExp(riddle.word,'g'),'####');
+		}
+	}
+	return parts[0];
 }
 
 function getWord() {
@@ -41,9 +50,11 @@ function getWord() {
 	});
 } 
 
+// can't get this to fire
 bot.onStartChattingMessage((message) => {
     bot.getUserProfile(message.from)
         .then((user) => {
+        	// this is too close to the code in onTextMessage, needs a refactor
         	getWord().then((riddle) => {
         		lastWord[message.chatId] = riddle.word.toLowerCase();
             	message.reply("Hey ${user.firstName}! Are you readuy to guess words based on definitons? Here comes the first: " + cleanDefn(riddle));
