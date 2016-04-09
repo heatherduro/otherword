@@ -79,7 +79,7 @@ bot.onTextMessage((message) => {
 		lastWord[message.chatId] = riddle.word.toLowerCase();
 		message.reply(cleanDefn(riddle));
 	}).catch(function(err){
-		message.reply("Something went wrong");
+		message.reply("Something went wrong " + err);
 	});
     
 });
