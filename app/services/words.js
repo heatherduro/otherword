@@ -95,15 +95,15 @@ class Words {
       return parts[0];
     };
 
-    return this.fetch(this.wordnik.api.definition.replace('{word}', word)).then(result => {
+    return this.fetch(this.wordnik.api.definition.replace('{word}', word)).then(payload => {
 
-        if (!result.data.length || !result.data[0].text) {
+        if (!payload.data.length || !payload.data[0].text) {
           throw 'No Definition found for word: ' + word;
         }
 
         return {
           word: word,
-          challenge: cleanResponse(result.data[0].text)
+          challenge: cleanResponse(payload.data[0].text)
         };
 
       });
