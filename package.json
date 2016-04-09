@@ -1,0 +1,27 @@
+{
+  "name": "otherword",
+  "version": "0.0.0",
+  "description": "A kik bot game involving synonyms",
+  "main": "server.js",
+  "engines": {
+    "node": "5.x.x",
+    "npm": "3.x.x"
+  },
+  "dependencies": {
+    "@kikinteractive/kik": "2.x.x",
+    "node-rest-client": "^1.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "game",
+    "words",
+    "kik",
+    "bot"
+  ],
+  "author": "Joe Capka",
+  "license": "MIT"
+}
