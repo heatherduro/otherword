@@ -1,91 +1,59 @@
 'use strict';
- 
-let util = require('util');
-let http = require('http');
-let Bot  = require('@kikinteractive/kik');
-let Client = require('node-rest-client').Client;
 
-let wordnikBaseAPI = "http://api.wordnik.com:80/v4/";
-let wordnikWordAPI = "word.json/";
-let wordnikWordsAPI = "words.json/";
-let wordnikRandomWordAPI = "randomWord?hasDictionaryDef=true&minCorpusCount=100000&maxCorpusCount=-1&minDictionaryCount=5&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&maxDictionaryCount=-1&minLength=3&maxLength=-1";
-let wordnikDefinitionAPI = "/definitions?limit=200&includeRelated=true&useCanonical=false&includeTags=false";
-let wordnikAPIkey = "&api_key=3b3cbcfaf00303d5360070ca0c10c20870357f872b1499516";
+const util = require('util');
+const http = require('http');
+const KikBot = require('@kikinteractive/kik');
+const wordService = require('./app/services/words');
 
-let port = process.env.PORT || 1337; 
-// Configure the bot API endpoint, details for your bot 
-let bot = new Bot({
-    username: 'otherword',
-    apiKey: 'cf47fd6a-3f2a-4fd2-bf12-31eb90d9ff95',
-    baseUrl: 'otherword.azurewebsites.net'
+const port = process.env.PORT || 1337;
+
+let wordCache = {};
+
+// Configure the kik API endpoint, details for your kik
+let kik = new KikBot({
+  username: 'otherword',
+  apiKey: 'cf47fd6a-3f2a-4fd2-bf12-31eb90d9ff95',
+  baseUrl: 'otherword.azurewebsites.net'
 });
-
- 
-let client = new Client();
-
-let lastWord = {};
-
-// sometimes the definition contains examples of use, need to hide those. 
-function cleanDefn(riddle){
-	// the examples appear after a colon
-	let parts = riddle.def.split(':');
-	if (parts.length > 1){
-		for (let i = 1; i < parts.length; i++) { 
-			// replace the examples with ####
-    		parts[0] += ':' + parts[i].replace(new RegExp(riddle.word,'g'),'####');
-		}
-	}
-	return parts[0];
-}
-
-function getWord() {
-
-	return new Promise(function(resolve, reject) {
-		client.get(wordnikBaseAPI + wordnikWordsAPI + wordnikRandomWordAPI + wordnikAPIkey, function(data, response) {
-			let word = data.word;
-			client.get(wordnikBaseAPI + wordnikWordAPI + word + wordnikDefinitionAPI + wordnikAPIkey, function(defData, defResponse){
-				resolve({word: word, def: defData[0].text})
-			}).on('error', reject);
-		}).on('error', reject);
-	});
-} 
 
 // can't get this to fire
-bot.onStartChattingMessage((message) => {
-    bot.getUserProfile(message.from)
-        .then((user) => {
-        	// this is too close to the code in onTextMessage, needs a refactor
-        	getWord().then((riddle) => {
-        		lastWord[message.chatId] = riddle.word.toLowerCase();
-            	message.reply("Hey ${user.firstName}! Are you readuy to guess words based on definitons? Here comes the first: " + cleanDefn(riddle));
-        	}).catch(function(err){
-        		message.reply("Something went wrong");
-        	});
-        });
+kik.onStartChattingMessage((message) => {
+  kik.getUserProfile(message.from).then(user => {
+
+    wordService.getRiddle().then(riddle => {
+      wordCache[message.chatId] = riddle.word.toLowerCase();
+      message.reply(`Hey ${user.firstName}! Are you ready to guess words based on definitions? Here comes the first:\n${riddle.challenge}`);
+    }).catch(function(err) {
+      message.reply("Something went wrong");
+    });
+
+  });
 });
  
-bot.onTextMessage((message) => {
-	let lw = lastWord[message.chatId]
+kik.onTextMessage((message) => {
+
+  let lastWord = wordCache[message.chatId];
 	let nextMessage = '';
-	if(typeof lw !== 'undefined') {
-		if(message.body.toLowerCase().includes(lw)){
+
+	if(typeof lastWord !== 'undefined') {
+		if(message.body.toLowerCase().includes(lastWord)){
 			nextMessage = "Nice! \n";
 		}
 		else{
-			nextMessage = "Sorry it was " + lw + ".\n";
+			nextMessage = "Sorry it was " + lastWord + ".\n";
 		}
 	}
 
-	getWord().then((riddle) => {
-		lastWord[message.chatId] = riddle.word.toLowerCase();
-		message.reply(nextMessage + "\n" + cleanDefn(riddle));
-	}).catch(function(err){
-		message.reply("Something went wrong " + err);
-	});
-    
+  wordService.getRiddle().then(riddle => {
+    lastWord[message.chatId] = riddle.word.toLowerCase();
+    message.reply(`${nextMessage}\n${riddle.challenge}`);
+  }).catch(function(err){
+    message.reply("Something went wrong");
+  });
+
 });
 
 // Set up your server and start listening
-let server = http
-    .createServer(bot.incoming())
-    .listen(port);
+http.createServer(kik.incoming()).listen(port);
+
+console.log(`Server listening on ${port}`);
