@@ -37,7 +37,8 @@ kik.onStartChattingMessage(message => {
 kik.onTextMessage(message => {
 
   let correctWord = wordCache[message.chatId];
-  
+  let nextMessage = '';
+
   if(typeof correctWord !== 'undefined' ){
     if (message.body && message.body.toLowerCase().includes(correctWord)) {
       nextMessage = 'Well done! ${correctWord} is correct!\n\n';
@@ -51,7 +52,7 @@ kik.onTextMessage(message => {
     wordCache[message.chatId] = riddle.word.toLowerCase();
     message.reply(`${nextMessage}${riddle.challenge}`);
   }).catch(function(err){
-    message.reply("Something went wrong" + err);
+    message.reply("Something went wrong");
   });
 
 });
