@@ -89,7 +89,7 @@ class Words {
       if (parts.length > 1){
         for (let i = 1; i < parts.length; i++) {
           // replace the examples with ####
-          parts[0] += ':' + parts[i].replace(new RegExp(responseText,'g'),'####');
+          parts[0] += ':' + parts[i].replace(new RegExp(word,'g'),'####');
         }
       }
       return parts[0];
