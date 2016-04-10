@@ -41,10 +41,10 @@ kik.onTextMessage(message => {
 
   if(typeof correctWord !== 'undefined' ){
     if (message.body && message.body.toLowerCase().includes(correctWord)) {
-      nextMessage = 'Well done! ${correctWord} is correct!\n\n';
+      nextMessage = `Well done! ${correctWord} is correct!\n\n`;
     }
     else{
-      nextMessage = 'Sorry, the answer was ${correctWord}\n\n';
+      nextMessage = `Sorry, the answer was ${correctWord}\n\n`;
     }
   }
 
