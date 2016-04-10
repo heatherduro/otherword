@@ -51,7 +51,7 @@ kik.onTextMessage(message => {
     wordCache[message.chatId] = riddle.word.toLowerCase();
     message.reply(`${nextMessage}${riddle.challenge}`);
   }).catch(function(err){
-    message.reply("Something went wrong");
+    message.reply("Something went wrong" + err);
   });
 
 });
