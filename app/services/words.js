@@ -82,19 +82,6 @@ class Words {
       throw `Invalid word: ${word}`
     }
 
-    // sometimes the definition contains examples of use, need to hide those.
-    let cleanResponse = responseText => {
-      // the examples appear after a colon
-      let parts = responseText.split(':');
-      if (parts.length > 1){
-        for (let i = 1; i < parts.length; i++) {
-          // replace the examples with ####
-          parts[0] += ':' + parts[i].replace(new RegExp(responseText,'g'),'####');
-        }
-      }
-      return parts[0];
-    };
-
     return this.fetch(this.wordnik.api.definition.replace('{word}', word)).then(payload => {
 
         if (!payload.data.length || !payload.data[0].text) {
@@ -103,7 +90,7 @@ class Words {
 
         return {
           word: word,
-          challenge: cleanResponse(payload.data[0].text)
+          definition: payload.data[0].text
         };
 
       });
@@ -113,8 +100,29 @@ class Words {
   // gets a random word and definition
   getRiddle() {
 
+    // sometimes the definition contains examples of use, need to hide those.
+    let cleanChallenge = data => {
+
+      // the examples appear after a colon
+      let parts = data.definition.split(':');
+      let wordRegex = new RegExp(data.word,'g');
+
+      parts.map(part => {
+        if (part === parts[0]) return;
+        parts[0] += part.replace(wordRegex,'####');
+      });
+
+      return parts[0];
+
+    };
+
     return this.randomWord().then(word => {
-      return this.getDefinition(word);
+      return this.getDefinition(word).then(data => {
+        return {
+          word: data.word,
+          challenge: cleanChallenge(data)
+        }
+      });
     });
 
   }
