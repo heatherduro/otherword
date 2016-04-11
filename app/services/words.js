@@ -1,7 +1,7 @@
 'use strict';
 
 const RestClient = require('node-rest-client').Client;
-const API_KEY = require('../../local/API_KEYS.json').wordnik;
+//const API_KEY = require('../local/API_KEYS.json').wordnik;
 
 class Words {
 
@@ -10,7 +10,7 @@ class Words {
     this.restClient = new RestClient();
 
     this.wordnik = {
-      apiKey: API_KEY,
+      apiKey: process.env.WORDNIK_API_KEY,
       api: {
         base: 'http://api.wordnik.com:80/v4/',
         word: 'word.json',
@@ -109,7 +109,7 @@ class Words {
 
       parts.map(part => {
         if (part === parts[0]) return;
-        parts[0] += part.replace(wordRegex,'####');
+        parts[0] += ':' + part.replace(wordRegex,'####');
       });
 
       return parts[0];

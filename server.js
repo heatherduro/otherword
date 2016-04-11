@@ -5,7 +5,7 @@ const http = require('http');
 const KikBot = require('@kikinteractive/kik');
 const wordService = require('./app/services/words');
 
-const API_KEY = require('../../local/API_KEYS.json').kik;
+//const API_KEY = require('../local/API_KEYS.json').kik;
 
 const port = process.env.PORT || 1337;
 
@@ -14,7 +14,7 @@ let wordCache = {};
 // Configure the kik API endpoint, details for your kik
 let kik = new KikBot({
   username: 'otherword',
-  apiKey: API_KEY,
+  apiKey: process.env.KIK_API_KEY,
   baseUrl: 'otherword.azurewebsites.net'
 });
 
@@ -37,15 +37,20 @@ kik.onStartChattingMessage(message => {
 kik.onTextMessage(message => {
 
   let correctWord = wordCache[message.chatId];
-  let nextMessage = `Sorry it was ${correctWord}\n`;
+  let nextMessage = '';
 
-  if (typeof correctWord === 'undefined' && message.body && message.body.toLowerCase().includes(correctWord)) {
-    nextMessage = `Well done! ${correctWord} is correct!\n`;
+  if(typeof correctWord !== 'undefined' ){
+    if (message.body && message.body.toLowerCase().includes(correctWord)) {
+      nextMessage = `Well done! ${correctWord} is correct!\n\n`;
+    }
+    else{
+      nextMessage = `Sorry, the answer was ${correctWord}\n\n`;
+    }
   }
 
   wordService.getRiddle().then(riddle => {
     wordCache[message.chatId] = riddle.word.toLowerCase();
-    message.reply(`${nextMessage}\n${riddle.challenge}`);
+    message.reply(`${nextMessage}${riddle.challenge}`);
   }).catch(function(err){
     message.reply("Something went wrong");
   });
