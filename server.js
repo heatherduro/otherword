@@ -12,8 +12,8 @@ let wordCache = {};
 // Configure the kik API endpoint, details for your kik
 let kik = new KikBot({
   username: 'peteristhebesttho',
-  apiKey: process.env.KIK_API_KEY,
-  baseUrl: 'safe-thicket-93320.herokuapp.com'
+  apiKey: '728529e0-1fcd-4674-aadf-41b660cdf6b9',
+  baseUrl: 'https://kik-echobot.ngrok.io/'
 });
 
 // can't get this to fire
