@@ -11,9 +11,9 @@ let wordCache = {};
 
 // Configure the kik API endpoint, details for your kik
 let kik = new KikBot({
-  username: 'otherword',
+  username: 'peteristhebesttho',
   apiKey: process.env.KIK_API_KEY,
-  baseUrl: 'otherword.azurewebsites.net'
+  baseUrl: 'safe-thicket-93320.herokuapp.com'
 });
 
 // can't get this to fire
